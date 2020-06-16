@@ -9,9 +9,9 @@ static NSString *const PLATFORM_CHANNEL = @"plugins.flutter.io/share";
 @interface ShareData : NSObject <UIActivityItemSource>
 
 @property(readonly, nonatomic, copy) NSString *subject;
-@property(readonly, nonatomic, copy) NSString *text;
+@property(readonly, nonatomic, copy) NSURL *text;
 
-- (instancetype)initWithSubject:(NSString *)subject text:(NSString *)text NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithSubject:(NSString *)subject text:(NSURL *)text NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init __attribute__((unavailable("Use initWithSubject:text: instead")));
 
@@ -24,7 +24,7 @@ static NSString *const PLATFORM_CHANNEL = @"plugins.flutter.io/share";
   return nil;
 }
 
-- (instancetype)initWithSubject:(NSString *)subject text:(NSString *)text {
+- (instancetype)initWithSubject:(NSString *)subject text:(NSURL *)text {
   self = [super init];
   if (self) {
     _subject = subject;
@@ -95,7 +95,8 @@ static NSString *const PLATFORM_CHANNEL = @"plugins.flutter.io/share";
            subject:(NSString *)subject
     withController:(UIViewController *)controller
           atSource:(CGRect)origin {
-  ShareData *data = [[ShareData alloc] initWithSubject:subject text:shareText];
+  NSURL *url = [NSURL URLWithString:[shareText stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+  ShareData *data = [[ShareData alloc] initWithSubject:subject text:url];
   UIActivityViewController *activityViewController =
       [[UIActivityViewController alloc] initWithActivityItems:@[ data ] applicationActivities:nil];
   activityViewController.popoverPresentationController.sourceView = controller.view;
